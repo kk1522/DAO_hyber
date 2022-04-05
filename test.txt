@@ -1,0 +1,128 @@
+import javax.persistence.EntityManagerFactory;
+import java.time.LocalDate;
+import java.util.List;
+
+import javax.persistence.EntityManager;
+import javax.persistence.Persistence;
+import javax.persistence.Query;
+
+import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+
+import javax.persistence.EntityTransaction;
+
+public class CrudTesting {
+	
+	EntityManagerFactory emf;
+	EntityManager em;
+	
+	
+		public CrudTesting() {
+		super();
+		emf =  Persistence.createEntityManagerFactory("MyJPA");
+		em = emf.createEntityManager();
+		// TODO Auto-generated constructor stub
+	}
+
+		@Test
+		public void insertAddTest() {
+			
+			System.out.println("trying to read persistane.xml");
+			Address add = new Address(); //Transient object - in memory
+			add.setFlatNo("c 205");
+			add.setSoceity("Gandharv chs");
+			add.setCity("Nerul");
+			add.setPin(400706);
+			AddressDAOImpl addImpl = new AddressDAOImpl();
+			addImpl.addAddress(add);
+		
+		}
+		@Test
+		public void insertPassportTest() {
+			
+			System.out.println("trying to read persistane.xml");
+			Passport pass = new Passport();
+			pass.setExpiryDate(LocalDate.of(2035, 2, 15));
+			PassportDAOImpl passImpl = new PassportDAOImpl();
+			passImpl.addPassport(pass);
+
+			
+		}
+public void insertProjectTest() {
+			
+			System.out.println("trying to read persistane.xml");
+			Project pro = new Project();
+			pro.setPojectName("scheme for farmers");
+			pro.setProjectDeadLine(LocalDate.of(2022, 0, 0));
+			
+}	
+		
+		@Test
+		public void insertEmpTest() {
+			
+			System.out.println("trying to read persistane.xml");
+			
+			EntityTransaction et = em.getTransaction();
+			Employee theEmp = new Employee(); //Transient object - in memory
+			theEmp.setEmployeeName("Suraj");
+			//theEmp.setEmployeeNumber(564654);
+			theEmp.setEmployeeDept("yono infra and ops");
+			theEmp.setDateOfjoining(LocalDate.of(2010, 5, 13));
+			et.begin();
+				em.persist(theEmp); // persistant object
+			et.commit();
+			
+		}
+		
+		@Test
+		public void findEmpTest() {
+			
+			
+			
+			Employee emp = em.find(Employee.class,9); // attached object -- attached to the hybernet
+			Assertions.assertTrue(emp!=null);
+			System.out.println(emp.getEmployeeName());
+		}
+		@Test
+		public void updateEmpTest() {
+			
+			
+			EntityTransaction et = em.getTransaction();
+			Employee emp = em.find(Employee.class,4); // attached object -- attached to the hybernet
+			Assertions.assertTrue(emp!=null);
+			emp.setEmployeeName("raj");
+			
+			et.begin();
+				em.merge(emp);
+			et.commit();
+			System.out.println(emp);
+		}
+		
+		@Test
+		public void deleteEmpTest() {
+			
+			
+			EntityTransaction et = em.getTransaction();
+			Employee emp = em.find(Employee.class,2); // attached object -- attached to the hybernet
+			Assertions.assertTrue(emp!=null);
+			et.begin();
+				em.remove(emp);
+			et.commit();
+			System.out.println(emp);
+		}
+		
+		@Test
+		public void findAllEmpTest() {
+			
+			
+			Query query = em.createQuery("from Employee"); // HQL  for select * from emp_tbl
+			List<Employee> emp = query.getResultList();
+			for (Employee employee : emp) {
+				System.out.println(employee);
+				System.out.println("------------------");
+			}
+				
+			
+		}
+		
+}
